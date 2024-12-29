@@ -3,21 +3,21 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "86c13d03",
+   "id": "dd25e42c",
    "metadata": {
     "_cell_guid": "b1076dfc-b9ad-4769-8c92-a6c4dae69d19",
     "_uuid": "8f2839f25d086af736a60e9eeb907d3b93b6e0e5",
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:46.285109Z",
-     "iopub.status.busy": "2024-12-18T18:43:46.284677Z",
-     "iopub.status.idle": "2024-12-18T18:43:47.315646Z",
-     "shell.execute_reply": "2024-12-18T18:43:47.313846Z"
+     "iopub.execute_input": "2024-12-29T19:01:35.210342Z",
+     "iopub.status.busy": "2024-12-29T19:01:35.209965Z",
+     "iopub.status.idle": "2024-12-29T19:01:36.081534Z",
+     "shell.execute_reply": "2024-12-29T19:01:36.080441Z"
     },
     "papermill": {
-     "duration": 1.041855,
-     "end_time": "2024-12-18T18:43:47.317984",
+     "duration": 0.884078,
+     "end_time": "2024-12-29T19:01:36.084077",
      "exception": false,
-     "start_time": "2024-12-18T18:43:46.276129",
+     "start_time": "2024-12-29T19:01:35.199999",
      "status": "completed"
     },
     "tags": []
@@ -53,37 +53,50 @@
   },
   {
    "cell_type": "markdown",
-   "id": "2eaa1f1f",
+   "id": "034d77da",
    "metadata": {
     "papermill": {
-     "duration": 0.005023,
-     "end_time": "2024-12-18T18:43:47.328863",
+     "duration": 0.007397,
+     "end_time": "2024-12-29T19:01:36.099741",
      "exception": false,
-     "start_time": "2024-12-18T18:43:47.323840",
+     "start_time": "2024-12-29T19:01:36.092344",
      "status": "completed"
     },
     "tags": []
    },
    "source": [
-    "# **Bias Detection and Mitigation on Credit Score Dataset**"
+    "# **Bias Detection and Mitigation on Credit Score Dataset**\n",
+    "\n",
+    "Welcome to this Kaggle Notebook, where we aim to explore and learn about AI fairness through the lens of a credit score dataset. In this notebook, we will focus on detecting and mitigating biases present in the dataset, specifically looking at the 'Gender' and 'Marital Status' columns.\n",
+    "\n",
+    "The primary objective of this analysis is to evaluate the accuracy of our models using the F1 score, not only on the overall dataset but also by comparing the performance across different groups defined by the 'Gender' and 'Marital Status' attributes. By doing so, we aim to uncover any disparities that may exist in the model's predictions.\n",
+    "\n",
+    "To address any identified biases, we will implement several techniques for bias mitigation:\n",
+    "1. **Synthetic Minority Over-sampling Technique (SMOTE)**: A method to address class imbalance by generating synthetic samples.\n",
+    "2. **Reweighting**: Adjusting the weights of different groups to balance the influence each group has on the training process.\n",
+    "3. **Learning Fair Representations (LFR)**: Transforming the dataset into a new representation that aims to remove bias while maintaining predictive performance.\n",
+    "\n",
+    "All the code in this notebook has been developed with the assistance of ChatGPT, a large language model (LLM), ensuring that the implementation is robust and efficient.\n",
+    "\n",
+    "Let's dive in and work towards creating a fairer and more equitable AI model!"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "64be4639",
+   "id": "4461cb20",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:47.341728Z",
-     "iopub.status.busy": "2024-12-18T18:43:47.341063Z",
-     "iopub.status.idle": "2024-12-18T18:43:47.431176Z",
-     "shell.execute_reply": "2024-12-18T18:43:47.429953Z"
+     "iopub.execute_input": "2024-12-29T19:01:36.118579Z",
+     "iopub.status.busy": "2024-12-29T19:01:36.117222Z",
+     "iopub.status.idle": "2024-12-29T19:01:36.194473Z",
+     "shell.execute_reply": "2024-12-29T19:01:36.193427Z"
     },
     "papermill": {
-     "duration": 0.100096,
-     "end_time": "2024-12-18T18:43:47.434090",
+     "duration": 0.089632,
+     "end_time": "2024-12-29T19:01:36.197013",
      "exception": false,
-     "start_time": "2024-12-18T18:43:47.333994",
+     "start_time": "2024-12-29T19:01:36.107381",
      "status": "completed"
     },
     "tags": []
@@ -385,21 +398,47 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "6b76f7a9",
+   "metadata": {
+    "papermill": {
+     "duration": 0.007986,
+     "end_time": "2024-12-29T19:01:36.214209",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:36.206223",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Class Distribution Analysis\n",
+    "\n",
+    "After loading and inspecting our dataset, we now turn our attention to understanding the distribution of the 'Credit Score' classes within the dataset. This step is crucial as it provides insights into the balance of our data, which in turn affects the performance of our machine learning models.\n",
+    "\n",
+    "We visualize the class distribution using a count plot, which shows the frequency of each 'Credit Score' category. The resulting plot reveals the following counts for each class:\n",
+    "- **High**: 113 instances\n",
+    "- **Average**: 36 instances\n",
+    "- **Low**: 15 instances\n",
+    "\n",
+    "From these numbers, it is evident that the majority of our dataset is classified as having a \"High\" credit score, while the \"Low\" credit score category is underrepresented. This class imbalance can introduce bias into our models, leading them to favor the majority class. Therefore, it is essential to address this imbalance during our bias detection and mitigation process.\n"
+   ]
+  },
+  {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "4caa5022",
+   "id": "9033e254",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:47.448601Z",
-     "iopub.status.busy": "2024-12-18T18:43:47.448169Z",
-     "iopub.status.idle": "2024-12-18T18:43:49.552548Z",
-     "shell.execute_reply": "2024-12-18T18:43:49.551263Z"
+     "iopub.execute_input": "2024-12-29T19:01:36.232437Z",
+     "iopub.status.busy": "2024-12-29T19:01:36.232085Z",
+     "iopub.status.idle": "2024-12-29T19:01:38.057476Z",
+     "shell.execute_reply": "2024-12-29T19:01:38.056481Z"
     },
     "papermill": {
-     "duration": 2.114549,
-     "end_time": "2024-12-18T18:43:49.555068",
+     "duration": 1.837094,
+     "end_time": "2024-12-29T19:01:38.059564",
      "exception": false,
-     "start_time": "2024-12-18T18:43:47.440519",
+     "start_time": "2024-12-29T19:01:36.222470",
      "status": "completed"
     },
     "tags": []
@@ -441,21 +480,68 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "0b9eef5c",
+   "metadata": {
+    "papermill": {
+     "duration": 0.008946,
+     "end_time": "2024-12-29T19:01:38.077890",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:38.068944",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Data Preprocessing and Model Evaluation\n",
+    "\n",
+    "To prepare our dataset for bias detection and mitigation, we undergo a series of preprocessing steps and model evaluation processes.\n",
+    "\n",
+    "**Step 1: Encode Categorical Features**\n",
+    "\n",
+    "First, we encode the categorical features in our dataset. This includes columns such as 'Gender', 'Education', 'Marital Status', and 'Home Ownership', along with our target variable 'Credit Score'. We use `LabelEncoder` to convert these categorical features into numerical values, making them suitable for our machine learning models.\n",
+    "\n",
+    "**Step 2: Define Features and Target Variable**\n",
+    "\n",
+    "Next, we define our features (X) by dropping the 'Credit Score' column from the dataset, and our target variable (y) as the 'Credit Score' column itself.\n",
+    "\n",
+    "**Step 3: Apply SMOTE**\n",
+    "\n",
+    "Given the skewed nature of our class distribution, we apply the Synthetic Minority Over-sampling Technique (SMOTE) to balance the classes. This step helps mitigate the bias introduced by the imbalanced dataset by generating synthetic samples for the minority classes.\n",
+    "\n",
+    "**Step 4: Standardize Features**\n",
+    "\n",
+    "After applying SMOTE, we standardize the features using StandardScaler to ensure that each feature contributes equally to the model.\n",
+    "\n",
+    "**Step 5: K-Fold Cross-Validation**\n",
+    "\n",
+    "We then proceed with model evaluation using K-Fold Cross-Validation. This technique splits the data into five folds and trains the model on different subsets of the data to obtain a robust estimate of the model's performance. We use a RandomForestClassifier as our example model.\n",
+    "\n",
+    "The cross-validation results are as follows:\n",
+    "\n",
+    "* **Cross-Validation Accuracy Scores**: [1.00000000, 0.98529412, 0.95588235, 0.97058824, 0.98507463]\n",
+    "\n",
+    "* **Mean Accuracy**: 0.979367866549605\n",
+    "\n",
+    "These results indicate that our model performs well across different subsets of the data, showcasing the effectiveness of our preprocessing steps and the model's ability to generalize.assert"
+   ]
+  },
+  {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "bb6fd64e",
+   "id": "fc856f30",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:49.570531Z",
-     "iopub.status.busy": "2024-12-18T18:43:49.569854Z",
-     "iopub.status.idle": "2024-12-18T18:43:51.281478Z",
-     "shell.execute_reply": "2024-12-18T18:43:51.279902Z"
+     "iopub.execute_input": "2024-12-29T19:01:38.097197Z",
+     "iopub.status.busy": "2024-12-29T19:01:38.096542Z",
+     "iopub.status.idle": "2024-12-29T19:01:39.519093Z",
+     "shell.execute_reply": "2024-12-29T19:01:39.517760Z"
     },
     "papermill": {
-     "duration": 1.72193,
-     "end_time": "2024-12-18T18:43:51.283878",
+     "duration": 1.434662,
+     "end_time": "2024-12-29T19:01:39.521261",
      "exception": false,
-     "start_time": "2024-12-18T18:43:49.561948",
+     "start_time": "2024-12-29T19:01:38.086599",
      "status": "completed"
     },
     "tags": []
@@ -527,21 +613,55 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "279e9550",
+   "metadata": {
+    "papermill": {
+     "duration": 0.008407,
+     "end_time": "2024-12-29T19:01:39.538575",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:39.530168",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Model Comparison and AI Fairness\n",
+    "\n",
+    "To evaluate our approach to bias mitigation, we compare the performance of different models using K-Fold Cross-Validation. \n",
+    "\n",
+    "We start with a baseline model using `DummyClassifier`, which always predicts the most frequent class. This serves as a benchmark to measure the effectiveness of our more sophisticated models.\n",
+    "\n",
+    "* **Baseline Accuracy Scores**: [0.25, 0.32352941, 0.25, 0.32352941, 0.28358209]\n",
+    "* **Mean Baseline Accuracy**: 0.2861281826163301\n",
+    "\n",
+    "Then, we perform Logistic Regression, with scores:\n",
+    "* **Logistic Regression Accuracy Scores**: [1.00, 1.00, 0.95588235, 0.98529412, 0.97014925]\n",
+    "* **Mean Logistic Regression Accuracy**: 0.9822651448639158\n",
+    "\n",
+    "The final model we are using on this section is XGBClassifier, with scores:\n",
+    "* **XGBClassifier Accuracy Scores**: [1.00, 0.97058824, 0.98529412, 0.94117647, 1.00]\n",
+    "* **Mean XGBClassifier Accuracy**: 0.9794117647058824\n",
+    "\n",
+    "These results highlight that both Logistic Regression and XGBClassifier significantly outperform the baseline model, indicating that our preprocessing and bias mitigation steps are effective."
+   ]
+  },
+  {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "80d12f28",
+   "id": "2c940d6b",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:51.300794Z",
-     "iopub.status.busy": "2024-12-18T18:43:51.300266Z",
-     "iopub.status.idle": "2024-12-18T18:43:52.019257Z",
-     "shell.execute_reply": "2024-12-18T18:43:52.018120Z"
+     "iopub.execute_input": "2024-12-29T19:01:39.557906Z",
+     "iopub.status.busy": "2024-12-29T19:01:39.557336Z",
+     "iopub.status.idle": "2024-12-29T19:01:40.126086Z",
+     "shell.execute_reply": "2024-12-29T19:01:40.125255Z"
     },
     "papermill": {
-     "duration": 0.731341,
-     "end_time": "2024-12-18T18:43:52.021882",
+     "duration": 0.583122,
+     "end_time": "2024-12-29T19:01:40.130337",
      "exception": false,
-     "start_time": "2024-12-18T18:43:51.290541",
+     "start_time": "2024-12-29T19:01:39.547215",
      "status": "completed"
     },
     "tags": []
@@ -588,21 +708,38 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "27fca6c7",
+   "metadata": {
+    "papermill": {
+     "duration": 0.012523,
+     "end_time": "2024-12-29T19:01:40.154895",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:40.142372",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Before diving into AI fairness analysis, we examine the class distribution for the 'Gender' column. This helps us understand the representation of different groups in our dataset:"
+   ]
+  },
+  {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "0076e089",
+   "id": "b7b4a242",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:52.039644Z",
-     "iopub.status.busy": "2024-12-18T18:43:52.039203Z",
-     "iopub.status.idle": "2024-12-18T18:43:52.046661Z",
-     "shell.execute_reply": "2024-12-18T18:43:52.045289Z"
+     "iopub.execute_input": "2024-12-29T19:01:40.178477Z",
+     "iopub.status.busy": "2024-12-29T19:01:40.177566Z",
+     "iopub.status.idle": "2024-12-29T19:01:40.184838Z",
+     "shell.execute_reply": "2024-12-29T19:01:40.183660Z"
     },
     "papermill": {
-     "duration": 0.018451,
-     "end_time": "2024-12-18T18:43:52.049227",
+     "duration": 0.021559,
+     "end_time": "2024-12-29T19:01:40.186758",
      "exception": false,
-     "start_time": "2024-12-18T18:43:52.030776",
+     "start_time": "2024-12-29T19:01:40.165199",
      "status": "completed"
     },
     "tags": []
@@ -626,37 +763,60 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": 7,
-   "id": "0ffa35e6",
+   "cell_type": "markdown",
+   "id": "b1e78f6d",
    "metadata": {
-    "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:52.064642Z",
-     "iopub.status.busy": "2024-12-18T18:43:52.064239Z",
-     "iopub.status.idle": "2024-12-18T18:43:53.588209Z",
-     "shell.execute_reply": "2024-12-18T18:43:53.586975Z"
-    },
     "papermill": {
-     "duration": 1.534789,
-     "end_time": "2024-12-18T18:43:53.590846",
+     "duration": 0.009537,
+     "end_time": "2024-12-29T19:01:40.205437",
      "exception": false,
-     "start_time": "2024-12-18T18:43:52.056057",
+     "start_time": "2024-12-29T19:01:40.195900",
      "status": "completed"
     },
     "tags": []
    },
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Male Group Accuracy Scores: [1. 1. 1. 1. 1.]\n",
-      "Mean Male Group Accuracy: 1.0\n",
-      "Female Group Accuracy Scores: [1.         1.         0.94117647 0.93939394 0.96969697]\n",
-      "Mean Female Group Accuracy: 0.9700534759358289\n"
-     ]
-    }
-   ],
+   "source": [
+    "## Gender-Based Model Performance Evaluation using Cross-Validation\n",
+    "\n",
+    "In our pursuit of AI fairness, we take the critical step of evaluating the model's performance separately for male and female groups. This analysis helps us identify any discrepancies in model accuracy across different gender categories and ensures our model is equitable.\n",
+    "\n",
+    "**Step 1: Split the Data by Gender**\n",
+    "First, we split the dataset into two groups based on the 'Gender' column: one for males and one for females.\n",
+    "\n",
+    "**Step 2: Define Features and Target Variable for Each Group**\n",
+    "For each gender group, we separate the features (X) and the target variable (y).\n",
+    "\n",
+    "**Step 3: Apply SMOTE to Balance the Data**\n",
+    "To address any class imbalances within each gender group, we apply SMOTE to create balanced datasets.\n",
+    "\n",
+    "**Step 4: Standardize Features**\n",
+    "We standardize the features for each gender group to ensure consistency in model training.\n",
+    "\n",
+    "**Step 5: Evaluate Model Performance Using Cross-Validation**\n",
+    "We perform cross-validation to evaluate the model's performance for each gender group. This helps us compare the accuracy scores across the different groups."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "ae47da80",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-12-29T19:01:40.229525Z",
+     "iopub.status.busy": "2024-12-29T19:01:40.228559Z",
+     "iopub.status.idle": "2024-12-29T19:01:40.263250Z",
+     "shell.execute_reply": "2024-12-29T19:01:40.262083Z"
+    },
+    "papermill": {
+     "duration": 0.049518,
+     "end_time": "2024-12-29T19:01:40.266066",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:40.216548",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
    "source": [
     "# Split the data by gender and evaluate performance separately\n",
     "df_male = df[df['Gender'] == 1]  # '0' corresponds to male\n",
@@ -675,35 +835,54 @@
     "\n",
     "# Standardize features\n",
     "X_male_smote_scaled = scaler.fit_transform(X_male_smote)\n",
-    "X_female_smote_scaled = scaler.fit_transform(X_female_smote)\n",
+    "X_female_smote_scaled = scaler.fit_transform(X_female_smote)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "48901f06",
+   "metadata": {
+    "papermill": {
+     "duration": 0.013,
+     "end_time": "2024-12-29T19:01:40.289607",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:40.276607",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### **Results `RandomForestClassifier`:**\n",
+    "* **Male Group Accuracy Scores**: [1.00, 1.00, 1.00, 1.00, 1.00]\n",
+    "* **Mean Male Group Accuracy**: 1.0\n",
+    "* **Female Group Accuracy Scores**: [1.00, 1.00, 0.94117647, 0.93939394, 0.96969697]\n",
+    "* **Mean Female Group Accuracy**: 0.9700534759358289\n",
     "\n",
-    "# Cross-validation for male group\n",
-    "male_scores = cross_val_score(model, X_male_smote_scaled, y_male_smote, cv=kf, scoring='accuracy')\n",
-    "print(\"Male Group Accuracy Scores:\", male_scores)\n",
-    "print(\"Mean Male Group Accuracy:\", male_scores.mean())\n",
+    "#### **Results `LogisticRegression`:**\n",
+    "* **Male Group Accuracy Scores**: [1.         0.95652174 1.         0.91304348 1.        ]\n",
+    "* **Mean Male Group Accuracy**: 0.9739130434782609\n",
+    "* **Female Group Accuracy Scores**: [1.         0.97058824 0.94117647 0.93939394 1.        ]\n",
+    "* **Mean Female Group Accuracy**: 0.9702317290552586\n",
     "\n",
-    "# Cross-validation for female group\n",
-    "female_scores = cross_val_score(model, X_female_smote_scaled, y_female_smote, cv=kf, scoring='accuracy')\n",
-    "print(\"Female Group Accuracy Scores:\", female_scores)\n",
-    "print(\"Mean Female Group Accuracy:\", female_scores.mean())\n"
+    "Although the differences in mean accuracy between the male and female groups are not extremely large, we do observe a slight disparity. The model achieves perfect accuracy for the male group, while the female group's accuracy is slightly lower. This indicates a potential bias in favor of the male category, which highlights the importance of addressing and mitigating such biases to ensure fairness in AI models."
    ]
   },
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "6c1c6464",
+   "id": "26bd2694",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:53.607413Z",
-     "iopub.status.busy": "2024-12-18T18:43:53.607005Z",
-     "iopub.status.idle": "2024-12-18T18:43:53.641175Z",
-     "shell.execute_reply": "2024-12-18T18:43:53.639449Z"
+     "iopub.execute_input": "2024-12-29T19:01:40.310027Z",
+     "iopub.status.busy": "2024-12-29T19:01:40.309624Z",
+     "iopub.status.idle": "2024-12-29T19:01:41.862741Z",
+     "shell.execute_reply": "2024-12-29T19:01:41.861566Z"
     },
     "papermill": {
-     "duration": 0.045871,
-     "end_time": "2024-12-18T18:43:53.644083",
+     "duration": 1.565671,
+     "end_time": "2024-12-29T19:01:41.865004",
      "exception": false,
-     "start_time": "2024-12-18T18:43:53.598212",
+     "start_time": "2024-12-29T19:01:40.299333",
      "status": "completed"
     },
     "tags": []
@@ -713,6 +892,99 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
+      "Male Group Accuracy Scores: [1. 1. 1. 1. 1.]\n",
+      "Mean Male Group Accuracy: 1.0\n",
+      "Female Group Accuracy Scores: [1.         1.         0.94117647 0.93939394 0.96969697]\n",
+      "Mean Female Group Accuracy: 0.9700534759358289\n",
+      "Male Group Accuracy Scores: [1.         0.95652174 1.         0.91304348 1.        ]\n",
+      "Mean Male Group Accuracy: 0.9739130434782609\n",
+      "Female Group Accuracy Scores: [1.         0.97058824 0.94117647 0.93939394 1.        ]\n",
+      "Mean Female Group Accuracy: 0.9702317290552586\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Cross-validation for male group - RandomForestClassifier model\n",
+    "male_scores = cross_val_score(model, X_male_smote_scaled, y_male_smote, cv=kf, scoring='accuracy')\n",
+    "print(\"Male Group Accuracy Scores:\", male_scores)\n",
+    "print(\"Mean Male Group Accuracy:\", male_scores.mean())\n",
+    "\n",
+    "# Cross-validation for female group - RandomForestClassifier model\n",
+    "female_scores = cross_val_score(model, X_female_smote_scaled, y_female_smote, cv=kf, scoring='accuracy')\n",
+    "print(\"Female Group Accuracy Scores:\", female_scores)\n",
+    "print(\"Mean Female Group Accuracy:\", female_scores.mean())\n",
+    "\n",
+    "#-----------------------------------------------------------------------------\n",
+    "# Cross-validation for male group - LogisticRegression model\n",
+    "male_scores = cross_val_score(logreg_model, X_male_smote_scaled, y_male_smote, cv=kf, scoring='accuracy')\n",
+    "print(\"Male Group Accuracy Scores:\", male_scores)\n",
+    "print(\"Mean Male Group Accuracy:\", male_scores.mean())\n",
+    "\n",
+    "# Cross-validation for female group - LogisticRegression model\n",
+    "female_scores = cross_val_score(logreg_model, X_female_smote_scaled, y_female_smote, cv=kf, scoring='accuracy')\n",
+    "print(\"Female Group Accuracy Scores:\", female_scores)\n",
+    "print(\"Mean Female Group Accuracy:\", female_scores.mean())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "29ba81d9",
+   "metadata": {
+    "papermill": {
+     "duration": 0.008919,
+     "end_time": "2024-12-29T19:01:41.883191",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:41.874272",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Gender-Based Model Performance Evaluation using F1 Score, Accuracy, & Confusion Matrix\n",
+    "\n",
+    "To thoroughly assess our models, we implement a function to evaluate key metrics, including accuracy, F1-score, and the confusion matrix. These metrics provide a comprehensive understanding of model performance across different groups.\n",
+    "\n",
+    "**Step 1: Define the Evaluation Function**\n",
+    "We create a function `evaluate_model_metrics` to fit the model to the given data and calculate the accuracy, F1-score, and confusion matrix. This function ensures that `y` is a 1D array, converting one-hot encoded labels to class labels if necessary.\n",
+    "\n",
+    "**Step 2: Evaluate Metrics for Male Group**\n",
+    "Using the evaluate_model_metrics function, we assess the performance of the `RandomForestClassifier` and `LogisticRegression` model for both male and female group."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "56b8551f",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2024-12-29T19:01:41.903178Z",
+     "iopub.status.busy": "2024-12-29T19:01:41.902758Z",
+     "iopub.status.idle": "2024-12-29T19:01:42.096451Z",
+     "shell.execute_reply": "2024-12-29T19:01:42.095319Z"
+    },
+    "papermill": {
+     "duration": 0.206221,
+     "end_time": "2024-12-29T19:01:42.098511",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:41.892290",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Male Group Accuracy Random Forest Classifier Model: 1.0, F1-Score: 1.0\n",
+      "Confusion Matrix for Male Group Random Forest Classifier Model:\n",
+      " [[57  0]\n",
+      " [ 0 57]]\n",
+      "Female Group Accuracy Random Forest Classifier Model: 0.9761904761904762, F1-Score: 0.9761828814460394\n",
+      "Confusion Matrix for Female Group Random Forest Classifier Model:\n",
+      " [[53  3  0]\n",
+      " [ 1 55  0]\n",
+      " [ 0  0 56]]\n",
       "Male Group Accuracy Logistic Regression Model: 0.9912280701754386, F1-Score: 0.9912273951519815\n",
       "Confusion Matrix for Male Group Logistic Regression Model:\n",
       " [[57  0]\n",
@@ -741,6 +1013,18 @@
     "    \n",
     "    return accuracy, f1, conf_matrix\n",
     "\n",
+    "#------------------------------------------------------------------------------\n",
+    "# Evaluate metrics for the male group - model(RandomForestClassifier)\n",
+    "accuracy_male, f1_male, conf_matrix_male = evaluate_model_metrics(X_male_smote_scaled, y_male_smote, model)\n",
+    "print(f\"Male Group Accuracy Random Forest Classifier Model: {accuracy_male}, F1-Score: {f1_male}\")\n",
+    "print(\"Confusion Matrix for Male Group Random Forest Classifier Model:\\n\", conf_matrix_male)\n",
+    "\n",
+    "# Evaluate metrics for the female group - logreg_model\n",
+    "accuracy_female, f1_female, conf_matrix_female = evaluate_model_metrics(X_female_smote_scaled, y_female_smote, logreg_model)\n",
+    "print(f\"Female Group Accuracy Random Forest Classifier Model: {accuracy_female}, F1-Score: {f1_female}\")\n",
+    "print(\"Confusion Matrix for Female Group Random Forest Classifier Model:\\n\", conf_matrix_female)\n",
+    "\n",
+    "#------------------------------------------------------------------------------\n",
     "# Evaluate metrics for the male group - logreg_model\n",
     "accuracy_male, f1_male, conf_matrix_male = evaluate_model_metrics(X_male_smote_scaled, y_male_smote, logreg_model)\n",
     "print(f\"Male Group Accuracy Logistic Regression Model: {accuracy_male}, F1-Score: {f1_male}\")\n",
@@ -753,21 +1037,64 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "1d387889",
+   "metadata": {
+    "papermill": {
+     "duration": 0.00886,
+     "end_time": "2024-12-29T19:01:42.116555",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:42.107695",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Despite the high overall performance, we observe a slight difference in accuracy and F1-score between the male and female groups, with the male group showing slightly better metrics. This indicates a potential bias in the model's predictions, favoring the male category. It underscores the importance of continuous monitoring and mitigation of biases to ensure fair and equitable AI models."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2afc24e2",
+   "metadata": {
+    "papermill": {
+     "duration": 0.009749,
+     "end_time": "2024-12-29T19:01:42.135376",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:42.125627",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Bias Metrics Calculation\n",
+    "\n",
+    "In this section, we focus on evaluating the bias metrics of our LogisticRegression model. These metrics help us understand how the model performs across different groups, specifically based on the 'Gender' attribute.\n",
+    "\n",
+    "**Step 1: Define the Bias Metrics Calculation Function**\n",
+    "We create a function `calculate_bias_metrics` that calculates bias metrics for the model based on a sensitive attribute. The function trains the model on the entire dataset and evaluates overall accuracy and F1-score. It then calculates these metrics for each group within the sensitive attribute and computes bias scores.\n",
+    "\n",
+    "**Step 2: Calculate Bias Metrics for Gender Attribute**\n",
+    "\n",
+    "Using the calculate_bias_metrics function, we evaluate the performance of the LogisticRegression model based on the 'Gender' attribute, where '0' represents females and '1' represents males."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 9,
-   "id": "9505fa2e",
+   "execution_count": 10,
+   "id": "423fc6e3",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:53.660336Z",
-     "iopub.status.busy": "2024-12-18T18:43:53.659870Z",
-     "iopub.status.idle": "2024-12-18T18:43:53.671323Z",
-     "shell.execute_reply": "2024-12-18T18:43:53.670072Z"
+     "iopub.execute_input": "2024-12-29T19:01:42.155689Z",
+     "iopub.status.busy": "2024-12-29T19:01:42.154751Z",
+     "iopub.status.idle": "2024-12-29T19:01:42.164829Z",
+     "shell.execute_reply": "2024-12-29T19:01:42.163627Z"
     },
     "papermill": {
-     "duration": 0.02256,
-     "end_time": "2024-12-18T18:43:53.673814",
+     "duration": 0.022367,
+     "end_time": "2024-12-29T19:01:42.166835",
      "exception": false,
-     "start_time": "2024-12-18T18:43:53.651254",
+     "start_time": "2024-12-29T19:01:42.144468",
      "status": "completed"
     },
     "tags": []
@@ -838,21 +1165,52 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "bfa67b2f",
+   "metadata": {
+    "papermill": {
+     "duration": 0.008636,
+     "end_time": "2024-12-29T19:01:42.184547",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:42.175911",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### **Results:**\n",
+    "The bias metrics for the LogisticRegression model are as follows:\n",
+    "* **Overall Metrics:** Accuracy: 0.6890243902439024; F1-Score: 0.5621643039535088\n",
+    "* **Group Metrics:**\n",
+    "  * **Female (0):** Accuracy: 0.6511627906976745; F1-Score: 0.5135931870291517\n",
+    "  * **Male (1):** Accuracy: 0.7307692307692307; F1-Score: 0.617094017094017\n",
+    "* **Bias Scores:**\n",
+    "  * Accuracy Difference: 0.07960644007155626\n",
+    "  * F1-Score Difference: 0.10350083006486532\n",
+    "  * Accuracy Ratio: 0.8910648714810283\n",
+    "  * F1-Score Ratio: 0.832277048232836\n",
+    "\n",
+    "These results indicate that the model shows a slight bias in favor of the male category, with higher accuracy and F1-scores for males compared to females. While the differences are not extremely large, they highlight the importance of continuously monitoring and addressing biases in AI models to ensure fairness and equity.\n",
+    "\n",
+    "For this analysis, we have used only the LogisticRegression model, as it demonstrates similar scores to other models in our study."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 10,
-   "id": "fcd07934",
+   "execution_count": 11,
+   "id": "33433689",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:53.691453Z",
-     "iopub.status.busy": "2024-12-18T18:43:53.691013Z",
-     "iopub.status.idle": "2024-12-18T18:43:53.729952Z",
-     "shell.execute_reply": "2024-12-18T18:43:53.728241Z"
+     "iopub.execute_input": "2024-12-29T19:01:42.204095Z",
+     "iopub.status.busy": "2024-12-29T19:01:42.203677Z",
+     "iopub.status.idle": "2024-12-29T19:01:42.239679Z",
+     "shell.execute_reply": "2024-12-29T19:01:42.238524Z"
     },
     "papermill": {
-     "duration": 0.051262,
-     "end_time": "2024-12-18T18:43:53.732537",
+     "duration": 0.048371,
+     "end_time": "2024-12-29T19:01:42.241869",
      "exception": false,
-     "start_time": "2024-12-18T18:43:53.681275",
+     "start_time": "2024-12-29T19:01:42.193498",
      "status": "completed"
     },
     "tags": []
@@ -883,21 +1241,40 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "eeaf1d3b",
+   "metadata": {
+    "papermill": {
+     "duration": 0.008877,
+     "end_time": "2024-12-29T19:01:42.260097",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:42.251220",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "### Visualization of Bias Metrics\n",
+    "\n",
+    "To gain a more intuitive understanding of the bias metrics, we visualize them using bar charts. These visualizations help us compare the performance metrics across different groups and identify any discrepancies that may exist."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 11,
-   "id": "ea5c75c0",
+   "execution_count": 12,
+   "id": "984eaaa1",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:53.749096Z",
-     "iopub.status.busy": "2024-12-18T18:43:53.748655Z",
-     "iopub.status.idle": "2024-12-18T18:43:54.621123Z",
-     "shell.execute_reply": "2024-12-18T18:43:54.619651Z"
+     "iopub.execute_input": "2024-12-29T19:01:42.280292Z",
+     "iopub.status.busy": "2024-12-29T19:01:42.279395Z",
+     "iopub.status.idle": "2024-12-29T19:01:43.104992Z",
+     "shell.execute_reply": "2024-12-29T19:01:43.103951Z"
     },
     "papermill": {
-     "duration": 0.884316,
-     "end_time": "2024-12-18T18:43:54.624235",
+     "duration": 0.837736,
+     "end_time": "2024-12-29T19:01:43.107025",
      "exception": false,
-     "start_time": "2024-12-18T18:43:53.739919",
+     "start_time": "2024-12-29T19:01:42.269289",
      "status": "completed"
     },
     "tags": []
@@ -983,21 +1360,45 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "f3495a4c",
+   "metadata": {
+    "papermill": {
+     "duration": 0.010044,
+     "end_time": "2024-12-29T19:01:43.127609",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:43.117565",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Bias Metrics Calculation for 'Marital Status'\n",
+    "\n",
+    "In this section, we shift our focus to evaluating the bias metrics based on the 'Marital Status' attribute. The class distribution for 'Marital Status' is as follows:\n",
+    "\n",
+    "- **Married (0)**: 87 instances\n",
+    "- **Single (1)**: 77 instances\n",
+    "\n",
+    "We calculate the bias metrics for the LogisticRegression model, similar to our previous analysis with the 'Gender' attribute. Here are the results:"
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 12,
-   "id": "a50ce09f",
+   "execution_count": 13,
+   "id": "e2e499da",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:54.643600Z",
-     "iopub.status.busy": "2024-12-18T18:43:54.643164Z",
-     "iopub.status.idle": "2024-12-18T18:43:54.652862Z",
-     "shell.execute_reply": "2024-12-18T18:43:54.651479Z"
+     "iopub.execute_input": "2024-12-29T19:01:43.151117Z",
+     "iopub.status.busy": "2024-12-29T19:01:43.150659Z",
+     "iopub.status.idle": "2024-12-29T19:01:43.158433Z",
+     "shell.execute_reply": "2024-12-29T19:01:43.157521Z"
     },
     "papermill": {
-     "duration": 0.022572,
-     "end_time": "2024-12-18T18:43:54.655525",
+     "duration": 0.021091,
+     "end_time": "2024-12-29T19:01:43.160404",
      "exception": false,
-     "start_time": "2024-12-18T18:43:54.632953",
+     "start_time": "2024-12-29T19:01:43.139313",
      "status": "completed"
     },
     "tags": []
@@ -1012,7 +1413,7 @@
        "Name: count, dtype: int64"
       ]
      },
-     "execution_count": 12,
+     "execution_count": 13,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1022,21 +1423,57 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "e3119792",
+   "metadata": {
+    "papermill": {
+     "duration": 0.009694,
+     "end_time": "2024-12-29T19:01:43.180264",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:43.170570",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "**Result:** \n",
+    "\n",
+    "Marital Status Bias Metrics (Logistic Regression)\n",
+    "- **Overall Metrics**:\n",
+    "  - Accuracy: 0.6890243902439024\n",
+    "  - F1-Score: 0.5621643039535088\n",
+    "- **Group Metrics**:\n",
+    "  - Married (0):\n",
+    "    - Accuracy: 0.9770114942528736\n",
+    "    - F1-Score: 0.9656508954824913\n",
+    "  - Single (1):\n",
+    "    - Accuracy: 0.36363636363636365\n",
+    "    - F1-Score: 0.19393939393939394\n",
+    "- **Bias Scores**:\n",
+    "  - Accuracy Difference: 0.61337513061651\n",
+    "  - F1-Score Difference: 0.7717115015430973\n",
+    "  - Accuracy Ratio: 0.37219251336898396\n",
+    "  - F1-Score Ratio: 0.20083799937087135\n",
+    "\n",
+    "These results show a significant bias in favor of the married category, with much higher accuracy and F1-scores for the married group compared to the single group. This indicates a substantial disparity in the model's performance based on marital status, highlighting the necessity to address and mitigate such biases."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 13,
-   "id": "b39d3b70",
+   "execution_count": 14,
+   "id": "5153c245",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:54.674615Z",
-     "iopub.status.busy": "2024-12-18T18:43:54.673704Z",
-     "iopub.status.idle": "2024-12-18T18:43:54.719328Z",
-     "shell.execute_reply": "2024-12-18T18:43:54.718079Z"
+     "iopub.execute_input": "2024-12-29T19:01:43.202347Z",
+     "iopub.status.busy": "2024-12-29T19:01:43.201525Z",
+     "iopub.status.idle": "2024-12-29T19:01:43.239271Z",
+     "shell.execute_reply": "2024-12-29T19:01:43.238274Z"
     },
     "papermill": {
-     "duration": 0.057575,
-     "end_time": "2024-12-18T18:43:54.721484",
+     "duration": 0.051048,
+     "end_time": "2024-12-29T19:01:43.241398",
      "exception": false,
-     "start_time": "2024-12-18T18:43:54.663909",
+     "start_time": "2024-12-29T19:01:43.190350",
      "status": "completed"
     },
     "tags": []
@@ -1067,21 +1504,40 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "ea811f76",
+   "metadata": {
+    "papermill": {
+     "duration": 0.009877,
+     "end_time": "2024-12-29T19:01:43.261714",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:43.251837",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "### Visualization for 'Marital Status' Column\n",
+    "\n",
+    "To further illustrate these findings, we will visualize the bias metrics for the 'Marital Status' attribute."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 14,
-   "id": "beb2b8e9",
+   "execution_count": 15,
+   "id": "c397bced",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:54.739958Z",
-     "iopub.status.busy": "2024-12-18T18:43:54.739340Z",
-     "iopub.status.idle": "2024-12-18T18:43:55.776093Z",
-     "shell.execute_reply": "2024-12-18T18:43:55.774753Z"
+     "iopub.execute_input": "2024-12-29T19:01:43.284466Z",
+     "iopub.status.busy": "2024-12-29T19:01:43.283768Z",
+     "iopub.status.idle": "2024-12-29T19:01:44.174574Z",
+     "shell.execute_reply": "2024-12-29T19:01:44.173494Z"
     },
     "papermill": {
-     "duration": 1.049252,
-     "end_time": "2024-12-18T18:43:55.778803",
+     "duration": 0.905052,
+     "end_time": "2024-12-29T19:01:44.177067",
      "exception": false,
-     "start_time": "2024-12-18T18:43:54.729551",
+     "start_time": "2024-12-29T19:01:43.272015",
      "status": "completed"
     },
     "tags": []
@@ -1167,21 +1623,89 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "965a9e81",
+   "metadata": {
+    "papermill": {
+     "duration": 0.010837,
+     "end_time": "2024-12-29T19:01:44.199910",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:44.189073",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Bias Mitigation Using Reweighting and Model Evaluation\n",
+    "\n",
+    "In this section, we enhance our data preprocessing steps and model evaluation process by incorporating reweighting techniques. These adjustments aim to mitigate potential biases in our dataset, ensuring a more equitable evaluation of our model.\n",
+    "\n",
+    "**Step 1: Encode Categorical Features**\n",
+    "\n",
+    "We begin by encoding the categorical features in our dataset, such as 'Gender', 'Education', 'Marital Status', 'Home Ownership', and 'Credit Score'. This transformation converts categorical variables into numerical values, making them suitable for machine learning algorithms.\n",
+    "\n",
+    "**Step 2: Define Features and Target Variable**\n",
+    "\n",
+    "Next, we define our features (X) by dropping the 'Credit Score' column and setting our target variable (y) as the 'Credit Score' column.\n",
+    "\n",
+    "**Step 3: Calculate Sample Weights**\n",
+    "\n",
+    "To address potential biases in our dataset, we calculate sample weights based on the distribution of the 'Gender' and 'Marital Status' columns. This involves:\n",
+    "- Calculating the counts for each category within 'Gender' and 'Marital Status'.\n",
+    "- Determining the total number of samples and the number of unique groups for each attribute.\n",
+    "- Computing the weights by inversely scaling the counts within each group.\n",
+    "\n",
+    "We combine the weights from both attributes to create a composite sample weight for each data point.\n",
+    "\n",
+    "**Step 4: Apply SMOTE**\n",
+    "\n",
+    "Given the skewed nature of our class distribution, we apply SMOTE to generate synthetic samples and balance the dataset. This step helps mitigate the bias introduced by imbalanced classes.\n",
+    "\n",
+    "**Step 5: Adjust Sample Weights for SMOTE**\n",
+    "\n",
+    "Post-SMOTE, we adjust the sample weights based on the original dataset. This ensures that the synthetic samples are appropriately weighted according to their original distribution.\n",
+    "\n",
+    "**Step 6: Standardize Features**\n",
+    "\n",
+    "We standardize the features using `StandardScaler` to ensure that all features contribute equally to the model.\n",
+    "\n",
+    "**Step 7: K-Fold Cross-Validation with Sample Weights**\n",
+    "\n",
+    "We employ K-Fold Cross-Validation to evaluate our model, incorporating the sample weights into the training process. This process involves:\n",
+    "- Splitting the data into five folds.\n",
+    "- Training the model on four folds and testing it on the remaining fold.\n",
+    "- Calculating accuracy scores for each fold.\n",
+    "\n",
+    "The results are as follows:\n",
+    "- **Cross-Validation Accuracy Scores**: [1.0, 0.9852941176470589, 0.9558823529411765, 0.9705882352941176, 0.9850746268656716]\n",
+    "- **Mean Accuracy**: 0.979367866549605\n",
+    "\n",
+    "**Baseline Model**\n",
+    "\n",
+    "As a benchmark, we also evaluate a baseline model using `DummyClassifier`, which always predicts the most frequent class. This provides a point of comparison to measure the effectiveness of our more sophisticated model.\n",
+    "\n",
+    "- **Baseline Accuracy Scores**: [0.25, 0.32352941, 0.25, 0.32352941, 0.28358209]\n",
+    "- **Mean Baseline Accuracy**: 0.2861281826163301\n",
+    "\n",
+    "These steps ensure a robust and equitable evaluation of our model, accounting for potential biases and imbalances in the dataset.\n"
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 15,
-   "id": "d69cd380",
+   "execution_count": 16,
+   "id": "e5429e40",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:55.800335Z",
-     "iopub.status.busy": "2024-12-18T18:43:55.799839Z",
-     "iopub.status.idle": "2024-12-18T18:43:56.627496Z",
-     "shell.execute_reply": "2024-12-18T18:43:56.626129Z"
+     "iopub.execute_input": "2024-12-29T19:01:44.224246Z",
+     "iopub.status.busy": "2024-12-29T19:01:44.223879Z",
+     "iopub.status.idle": "2024-12-29T19:01:45.012053Z",
+     "shell.execute_reply": "2024-12-29T19:01:45.011067Z"
     },
     "papermill": {
-     "duration": 0.84154,
-     "end_time": "2024-12-18T18:43:56.630156",
+     "duration": 0.803256,
+     "end_time": "2024-12-29T19:01:45.014321",
      "exception": false,
-     "start_time": "2024-12-18T18:43:55.788616",
+     "start_time": "2024-12-29T19:01:44.211065",
      "status": "completed"
     },
     "tags": []
@@ -1272,21 +1796,53 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "b94497c8",
+   "metadata": {
+    "papermill": {
+     "duration": 0.010953,
+     "end_time": "2024-12-29T19:01:45.036752",
+     "exception": false,
+     "start_time": "2024-12-29T19:01:45.025799",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Bias Mitigation Using Learning Fair Representations (LFR)\n",
+    "\n",
+    "In this notebook, we explore the use of **Learning Fair Representations (LFR)** to mitigate bias in a dataset. Specifically, we focus on two protected attributes: **Gender** and **Marital Status**. The goal is to reduce bias in a dataset by transforming it using LFR and evaluating the performance of a model trained on the transformed data.\n",
+    "\n",
+    "**Step 1: Dataset Preparation**  \n",
+    "   - Defined the protected attributes `Gender` and `Marital Status`.\n",
+    "   - Used `StandardDataset` from AIF360 to preprocess the data.  \n",
+    "   - Split the data into training (70%) and testing (30%) sets.\n",
+    "\n",
+    "**Step 2: LFR Transformation**  \n",
+    "   - Applied LFR to mitigate bias for both protected attributes.\n",
+    "   - Tuned parameters (`k`, `Ax`, `Ay`, `Az`) to achieve optimal results.\n",
+    "\n",
+    "**Step 3: Model Training and Evaluation**  \n",
+    "   - Trained a **Random Forest Classifier** on the transformed datasets for both `Gender` and `Marital Status`.\n",
+    "   - Evaluated model performance using **Accuracy** and **F1-score**."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 16,
-   "id": "18785b21",
+   "execution_count": 17,
+   "id": "81c291bd",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:43:56.651523Z",
-     "iopub.status.busy": "2024-12-18T18:43:56.651133Z",
-     "iopub.status.idle": "2024-12-18T18:44:25.602622Z",
-     "shell.execute_reply": "2024-12-18T18:44:25.601167Z"
+     "iopub.execute_input": "2024-12-29T19:01:45.061745Z",
+     "iopub.status.busy": "2024-12-29T19:01:45.060838Z",
+     "iopub.status.idle": "2024-12-29T19:02:09.757652Z",
+     "shell.execute_reply": "2024-12-29T19:02:09.756528Z"
     },
     "papermill": {
-     "duration": 28.965641,
-     "end_time": "2024-12-18T18:44:25.605524",
+     "duration": 24.711986,
+     "end_time": "2024-12-29T19:02:09.760230",
      "exception": false,
-     "start_time": "2024-12-18T18:43:56.639883",
+     "start_time": "2024-12-29T19:01:45.048244",
      "status": "completed"
     },
     "tags": []
@@ -1334,20 +1890,20 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 17,
-   "id": "82a64598",
+   "execution_count": 18,
+   "id": "ce73da71",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:44:25.628231Z",
-     "iopub.status.busy": "2024-12-18T18:44:25.627514Z",
-     "iopub.status.idle": "2024-12-18T18:44:27.306929Z",
-     "shell.execute_reply": "2024-12-18T18:44:27.305460Z"
+     "iopub.execute_input": "2024-12-29T19:02:09.788078Z",
+     "iopub.status.busy": "2024-12-29T19:02:09.786819Z",
+     "iopub.status.idle": "2024-12-29T19:02:11.310807Z",
+     "shell.execute_reply": "2024-12-29T19:02:11.309759Z"
     },
     "papermill": {
-     "duration": 1.69397,
-     "end_time": "2024-12-18T18:44:27.309888",
+     "duration": 1.539977,
+     "end_time": "2024-12-29T19:02:11.313018",
      "exception": false,
-     "start_time": "2024-12-18T18:44:25.615918",
+     "start_time": "2024-12-29T19:02:09.773041",
      "status": "completed"
     },
     "tags": []
@@ -1393,20 +1949,20 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
-   "id": "ed47dbc7",
+   "execution_count": 19,
+   "id": "f89eb087",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:44:27.333797Z",
-     "iopub.status.busy": "2024-12-18T18:44:27.333349Z",
-     "iopub.status.idle": "2024-12-18T18:44:28.915232Z",
-     "shell.execute_reply": "2024-12-18T18:44:28.913960Z"
+     "iopub.execute_input": "2024-12-29T19:02:11.340208Z",
+     "iopub.status.busy": "2024-12-29T19:02:11.339231Z",
+     "iopub.status.idle": "2024-12-29T19:02:12.806638Z",
+     "shell.execute_reply": "2024-12-29T19:02:12.805288Z"
     },
     "papermill": {
-     "duration": 1.597125,
-     "end_time": "2024-12-18T18:44:28.917802",
+     "duration": 1.483547,
+     "end_time": "2024-12-29T19:02:12.809116",
      "exception": false,
-     "start_time": "2024-12-18T18:44:27.320677",
+     "start_time": "2024-12-29T19:02:11.325569",
      "status": "completed"
     },
     "tags": []
@@ -1452,20 +2008,20 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 19,
-   "id": "e57b43d8",
+   "execution_count": 20,
+   "id": "71a09f03",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:44:28.942334Z",
-     "iopub.status.busy": "2024-12-18T18:44:28.941949Z",
-     "iopub.status.idle": "2024-12-18T18:44:29.098667Z",
-     "shell.execute_reply": "2024-12-18T18:44:29.097304Z"
+     "iopub.execute_input": "2024-12-29T19:02:12.841192Z",
+     "iopub.status.busy": "2024-12-29T19:02:12.840715Z",
+     "iopub.status.idle": "2024-12-29T19:02:13.005396Z",
+     "shell.execute_reply": "2024-12-29T19:02:13.004010Z"
     },
     "papermill": {
-     "duration": 0.172872,
-     "end_time": "2024-12-18T18:44:29.101651",
+     "duration": 0.180673,
+     "end_time": "2024-12-29T19:02:13.007610",
      "exception": false,
-     "start_time": "2024-12-18T18:44:28.928779",
+     "start_time": "2024-12-29T19:02:12.826937",
      "status": "completed"
     },
     "tags": []
@@ -1503,20 +2059,20 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 20,
-   "id": "4d55a57d",
+   "execution_count": 21,
+   "id": "d4277c75",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:44:29.125876Z",
-     "iopub.status.busy": "2024-12-18T18:44:29.125471Z",
-     "iopub.status.idle": "2024-12-18T18:44:29.279830Z",
-     "shell.execute_reply": "2024-12-18T18:44:29.278768Z"
+     "iopub.execute_input": "2024-12-29T19:02:13.035131Z",
+     "iopub.status.busy": "2024-12-29T19:02:13.034381Z",
+     "iopub.status.idle": "2024-12-29T19:02:13.191086Z",
+     "shell.execute_reply": "2024-12-29T19:02:13.189979Z"
     },
     "papermill": {
-     "duration": 0.169313,
-     "end_time": "2024-12-18T18:44:29.282265",
+     "duration": 0.173313,
+     "end_time": "2024-12-29T19:02:13.193559",
      "exception": false,
-     "start_time": "2024-12-18T18:44:29.112952",
+     "start_time": "2024-12-29T19:02:13.020246",
      "status": "completed"
     },
     "tags": []
@@ -1554,21 +2110,81 @@
    ]
   },
   {
+   "cell_type": "markdown",
+   "id": "865ad5be",
+   "metadata": {
+    "papermill": {
+     "duration": 0.013667,
+     "end_time": "2024-12-29T19:02:13.220345",
+     "exception": false,
+     "start_time": "2024-12-29T19:02:13.206678",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### **Results**\n",
+    "\n",
+    "**Gender**\n",
+    "- **Accuracy**: `1.0000`\n",
+    "- **F1-Score**: `1.0000`\n",
+    "\n",
+    "**Marital Status**\n",
+    "- **Accuracy**: `1.0000`\n",
+    "- **F1-Score**: `1.0000`\n",
+    " \n",
+    "The use of **Learning Fair Representations (LFR)** effectively mitigated bias in the dataset for both `Gender` and `Marital Status`. The transformed data allowed for perfectly accurate and fair predictions."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "133b2a8a",
+   "metadata": {
+    "papermill": {
+     "duration": 0.012726,
+     "end_time": "2024-12-29T19:02:13.245800",
+     "exception": false,
+     "start_time": "2024-12-29T19:02:13.233074",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "### Fairness Metrics Analysis for Gender and Marital Status\n",
+    "\n",
+    "In this section, we evaluate the fairness of the transformed dataset using **BinaryLabelDatasetMetric** from the AIF360 library. The metrics of interest are **Disparate Impact (Demographic Parity)** and **Statistical Parity Difference**, which help quantify bias in the dataset for both protected attributes: **Gender** and **Marital Status**.\n",
+    "\n",
+    "#### **Results**\n",
+    "\n",
+    "**Gender**\n",
+    "- **Disparate Impact (Demographic Parity)**: `0.4213`  \n",
+    "  This value is below 1, indicating potential unfair treatment between privileged (Male) and unprivileged (Female) groups.  \n",
+    "- **Statistical Parity Difference**: `-0.4006`  \n",
+    "  A negative value indicates that the unprivileged group (Female) is less likely to receive favorable outcomes compared to the privileged group (Male).\n",
+    "\n",
+    "**Marital Status**\n",
+    "- **Disparate Impact (Demographic Parity)**: `0.3626`  \n",
+    "  Similarly, this value indicates potential unfairness between privileged (Married) and unprivileged (Single) groups.  \n",
+    "- **Statistical Parity Difference**: `-0.1851`  \n",
+    "  The negative value suggests that the unprivileged group (Single) receives fewer favorable outcomes compared to the privileged group (Married)."
+   ]
+  },
+  {
    "cell_type": "code",
-   "execution_count": 21,
-   "id": "e9293cf6",
+   "execution_count": 22,
+   "id": "e9e67403",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2024-12-18T18:44:29.306202Z",
-     "iopub.status.busy": "2024-12-18T18:44:29.305809Z",
-     "iopub.status.idle": "2024-12-18T18:44:29.315272Z",
-     "shell.execute_reply": "2024-12-18T18:44:29.313884Z"
+     "iopub.execute_input": "2024-12-29T19:02:13.272503Z",
+     "iopub.status.busy": "2024-12-29T19:02:13.272139Z",
+     "iopub.status.idle": "2024-12-29T19:02:13.279905Z",
+     "shell.execute_reply": "2024-12-29T19:02:13.278814Z"
     },
     "papermill": {
-     "duration": 0.02413,
-     "end_time": "2024-12-18T18:44:29.317587",
+     "duration": 0.023743,
+     "end_time": "2024-12-29T19:02:13.282145",
      "exception": false,
-     "start_time": "2024-12-18T18:44:29.293457",
+     "start_time": "2024-12-29T19:02:13.258402",
      "status": "completed"
     },
     "tags": []
@@ -1614,43 +2230,32 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": 22,
-   "id": "8f379ae7",
+   "cell_type": "markdown",
+   "id": "2a3b2f42",
    "metadata": {
-    "execution": {
-     "iopub.execute_input": "2024-12-18T18:44:29.341749Z",
-     "iopub.status.busy": "2024-12-18T18:44:29.341226Z",
-     "iopub.status.idle": "2024-12-18T18:44:29.352281Z",
-     "shell.execute_reply": "2024-12-18T18:44:29.350988Z"
-    },
     "papermill": {
-     "duration": 0.025984,
-     "end_time": "2024-12-18T18:44:29.354610",
+     "duration": 0.012298,
+     "end_time": "2024-12-29T19:02:13.307161",
      "exception": false,
-     "start_time": "2024-12-18T18:44:29.328626",
+     "start_time": "2024-12-29T19:02:13.294863",
      "status": "completed"
     },
     "tags": []
    },
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "0.0    57\n",
-      "1.0    57\n",
-      "Name: count, dtype: int64\n",
-      "0.0    87\n",
-      "1.0    27\n",
-      "Name: count, dtype: int64\n"
-     ]
-    }
-   ],
    "source": [
-    "# Convert numpy arrays to pandas Series and then call value_counts()\n",
-    "print(pd.Series(train_transf_gender.labels.ravel()).value_counts())\n",
-    "print(pd.Series(train_transf_marital.labels.ravel()).value_counts())\n"
+    "### Conclusion and Takeaways\n",
+    "\n",
+    "1. **Key Observations**  \n",
+    "   - The **Disparate Impact** for both attributes is significantly below 1, indicating unequal treatment across the groups.  \n",
+    "   - **Statistical Parity Difference** values for both attributes reveal a disparity in favorable outcomes, skewed against the unprivileged groups (Female and Single).  \n",
+    "\n",
+    "2. **Next Steps**  \n",
+    "   - Further mitigate bias by adjusting parameters in LFR or exploring other preprocessing techniques such as adversarial debiasing.  \n",
+    "   - Validate fairness metrics using additional measures like Equal Opportunity Difference or Average Odds Difference for a more comprehensive fairness evaluation.  \n",
+    "   - Investigate the root causes of the observed bias in the dataset or model predictions.  \n",
+    "\n",
+    "3. **Takeaway**  \n",
+    "   While LFR helps transform the dataset to improve fairness, the results suggest there is still room for improvement in mitigating bias. Achieving parity may require a combination of preprocessing, in-processing, and post-processing techniques."
    ]
   }
  ],
@@ -1689,14 +2294,14 @@
   },
   "papermill": {
    "default_parameters": {},
-   "duration": 48.586712,
-   "end_time": "2024-12-18T18:44:31.948190",
+   "duration": 42.574776,
+   "end_time": "2024-12-29T19:02:14.843042",
    "environment_variables": {},
    "exception": null,
    "input_path": "__notebook__.ipynb",
    "output_path": "__notebook__.ipynb",
    "parameters": {},
-   "start_time": "2024-12-18T18:43:43.361478",
+   "start_time": "2024-12-29T19:01:32.268266",
    "version": "2.6.0"
   }
  },
